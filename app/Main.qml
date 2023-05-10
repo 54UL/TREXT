@@ -150,6 +150,10 @@ ApplicationWindow {
     property int endX: 0
     property int endY: 0
 
+    property int rectX: 0
+    property int rectY: 0
+    property int rectW: 0
+    property int rectH: 0
 
     Window {
         id: ssWindow;
@@ -179,10 +183,10 @@ ApplicationWindow {
                     endX = mouse.x
                     endY = mouse.y
 
-                    var rectX = Math.min(startX, endX)
-                    var rectY = Math.min(startY, endY)
-                    var rectW = Math.abs(endX - startX)
-                    var rectH = Math.abs(endY - startY)
+                     rectX = Math.min(startX, endX)
+                     rectY = Math.min(startY, endY)
+                     rectW = Math.abs(endX - startX)
+                     rectH = Math.abs(endY - startY)
 
                     selectionRect.x = rectX
                     selectionRect.y = rectY
@@ -226,7 +230,15 @@ ApplicationWindow {
             {
                 text: "Scan again"
                 Layout.fillWidth: true
-                onClicked: console.log("Scan again")
+                onClicked:
+                {
+                    var rect = Qt.rect(rectX, rectY, rectW, rectH);
+                    console.log(screenshotItem)
+                    console.log(rect)
+
+                    textPrediction.text = ScreenshotHelper.recognizeText(screenshotItem.source, rect);
+                }
+
             }
 
             Button {
@@ -252,11 +264,12 @@ ApplicationWindow {
                 Layout.fillWidth: true
 
                 TextArea {
+                    id: textPrediction
                     anchors.fill: parent
                     textFormat: TextEdit.RichText
                     readOnly: true
                     wrapMode:  TextArea.WordWrap
-                    text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce ac ipsum libero. Donec euismod, sapien id ultrices lobortis, lorem nisl eleifend lectus, non eleifend nisl massa non turpis. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Sed hendrerit augue eget leo bibendum laoreet. Suspendisse potenti. Aliquam id metus eu arcu faucibus efficitur. Praesent laoreet risus eu enim volutpat, sed interdum augue sollicitudin. Aenean vel erat nec sapien sodales finibus id quis velit. Sed eget pretium nulla. Nulla sed purus vel neque efficitur aliquam. Suspendisse varius ipsum euismod, ullamcorper risus a, consequat est. Proin non placerat libero, ac auctor arcu. Nulla facilisi. Vivamus sit amet mauris vitae sapien venenatis interdum. "
+                    text: "NO PREDICTED TEXT AVAILABLE"
                 }
             }
         }

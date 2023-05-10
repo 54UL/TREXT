@@ -5,6 +5,8 @@
 #include <QImage>
 #include <QObject>
 #include <QUrl>
+#include <QImage>
+#include <QQuickImageProvider>
 
 class ScreenshotHelper : public QObject
 {
@@ -14,7 +16,7 @@ public:
 
     //QML METHODS
     Q_INVOKABLE QUrl captureWindow(QWindow *window);
-
+    Q_INVOKABLE QString recognizeText(QString b64Image, QRect region);
 signals:
 
 };

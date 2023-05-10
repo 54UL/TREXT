@@ -11,7 +11,7 @@
 
 int main(int argc, char *argv[])
 {
-    const QUrl url(u"qrc:/SnipingTester/Main.qml"_qs);//QML APPP ENTRY POINT
+    const QUrl url(u"qrc:/Main.qml"_qs);//QML APPP ENTRY POINT
 
 //    //Static configurations
 //    auto cursor =  QCursor(Qt::CursorShape::CrossCursor);
