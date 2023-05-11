@@ -1,6 +1,6 @@
-<!DOCTYPE RCC>
-<RCC version="1.0">
-    <qresource>
+<RCC>
+    <qresource prefix="/">
         <file>Main.qml</file>
+        <file>ScreenShootMenu.qml</file>
     </qresource>
 </RCC>

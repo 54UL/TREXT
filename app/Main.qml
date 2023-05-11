@@ -155,12 +155,21 @@ ApplicationWindow {
     property int rectW: 0
     property int rectH: 0
 
-    Window {
+    ApplicationWindow {
+
         id: ssWindow;
         width: Screen.width * 0.70
         height: Screen.height * 0.60
         title: "Screenshot preview"
         visible: false
+        ScreenShootMenu {
+        }
+        //FIXME: MFIX THIS TRASH DOES NOT WORK
+//        Component
+//        {
+//                id: menuBarComponent
+
+//        }
 
         Image {
             id: screenshotItem
@@ -232,10 +241,15 @@ ApplicationWindow {
                 Layout.fillWidth: true
                 onClicked:
                 {
-                    var rect = Qt.rect(rectX, rectY, rectW, rectH);
-                    console.log(screenshotItem)
-                    console.log(rect)
+                    var scaleX =  screenshotItem.sourceSize.width / screenshotItem.width ;
+                    var scaleY =  screenshotItem.sourceSize.height / screenshotItem.height ;
 
+                    var scaledX = rectX * scaleX;
+                    var scaledY = rectY * scaleY;
+                    var scaledWidth = rectW * scaleX;
+                    var scaledHeight = rectH * scaleY;
+
+                    var rect = Qt.rect(scaledX, scaledY, scaledWidth, scaledHeight);
                     textPrediction.text = ScreenshotHelper.recognizeText(screenshotItem.source, rect);
                 }
 

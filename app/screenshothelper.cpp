@@ -14,7 +14,6 @@
 #include <opencv2/opencv.hpp>
 #include <tesseract/baseapi.h>
 #include <QQuickImageProvider>
-//#include <opencv2/core/base64.hpp>
 #include <QByteArray>
 #include <QRegularExpression>
 
@@ -25,36 +24,6 @@ cv::Mat qImageToCvMat(const QImage& qImage)
     cv::cvtColor(cvMat, cvMat, cv::COLOR_BGR2RGB); // Optional: Convert BGR to RGB format
 
     return cvMat.clone(); // Return a copy of the cv::Mat
-}
-
-//returns the text content from the provided file path
-//file: file path
-extern const char * ReadImage(const char * file)
-{
-    // Load the image
-    cv::Mat image = cv::imread(file);
-
-    // Create a Tesseract OCR object
-    tesseract::TessBaseAPI ocr;
-    ocr.Init(NULL, "eng", tesseract::OEM_DEFAULT);
-    ocr.SetPageSegMode(tesseract::PSM_AUTO);
-
-    // Convert the image to grayscale
-    cv::Mat gray;
-    cv::cvtColor(image, gray, cv::COLOR_BGR2GRAY);
-
-
-
-    // Set the image data for OCR
-    ocr.SetImage(gray.data, gray.cols, gray.rows, 1, gray.cols);
-    ocr.SetSourceResolution(172);
-
-    // Run OCR on the image
-    char* text = ocr.GetUTF8Text();
-
-    // Release the memory used by the OCR object and the text
-    ocr.End();
-    return text;
 }
 
 ScreenshotHelper::ScreenshotHelper(QObject *parent)
@@ -113,15 +82,40 @@ QString ScreenshotHelper::recognizeText(QString b64Image, QRect region)
     ocr.Init(NULL, "eng", tesseract::OEM_DEFAULT);
     ocr.SetPageSegMode(tesseract::PSM_AUTO);
     // Convert the image to grayscale
-    cv::Mat gray;
-    cv::cvtColor(image, gray, cv::COLOR_BGR2GRAY);
-    // Create a window to display the image
-    cv::namedWindow("Image", cv::WINDOW_NORMAL);
+    // Convert input image to grayscale and float
+    cv::Mat grayscaleImage;
+    cv::cvtColor(image, grayscaleImage, cv::COLOR_BGR2GRAY);
+    cv::Mat grayscaleFloat;
+    grayscaleImage.convertTo(grayscaleFloat, CV_32F, 1.0 / 255.0);
+
 
     // Show the image in the window
-    cv::imshow("Image", gray);
-    // Set the image data for OCR
-    ocr.SetImage(gray.data, gray.cols, gray.rows, 1, gray.cols);
+    cv::imshow("Image", grayscaleImage);
+    // Apply image filtering techniques
+    cv::Mat filteredImage;
+    cv::Mat gammaCorrectedImage;
+    cv::Mat contrastNormalizedImage;
+    cv::bitwise_not(grayscaleImage, filteredImage);  // Invert image (optional)
+
+    // Apply gamma correction
+    // Apply gamma correction
+    double gamma = 1.5;
+    cv::Mat gammaLookupTable(1, 256, CV_8U);
+    uchar* p = gammaLookupTable.ptr();
+    for (int i = 0; i < 256; ++i)
+        p[i] = cv::saturate_cast<uchar>(pow(i / 255.0, gamma) * 255.0);
+    cv::LUT(filteredImage, gammaLookupTable, gammaCorrectedImage);
+
+    // Normalize contrast
+    double contrast = 200.0;
+    double brightness = 133.0;
+    filteredImage.convertTo(contrastNormalizedImage, -1, contrast / 100.0, brightness - contrast * brightness / 100.0);
+
+    cv::imshow("Image2", contrastNormalizedImage);
+
+    // Set image for OCR
+    ocr.SetImage(contrastNormalizedImage.data, contrastNormalizedImage.cols, contrastNormalizedImage.rows, 1,
+                 contrastNormalizedImage.step);
     ocr.SetSourceResolution(300);
 
     // Run OCR on the image
