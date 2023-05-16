@@ -10,22 +10,23 @@ ApplicationWindow {
     visible:true
     id: appWindow;
 //    flags: Qt.Window | Qt.FramelessWindowHint
-    width: 300
-    height: 180
+//    width: 300
+//    height: 180
     title: "Screenshot Tool"
     background: Image {
      anchors.fill: parent
-     source: "https://w0.peakpx.com/wallpaper/273/225/HD-wallpaper-hello-kitty-pink-flowers-umbrella-flowers-hello-kitty-pink-sanrio.jpg"
+//     source: "https://w0.peakpx.com/wallpaper/273/225/HD-wallpaper-hello-kitty-pink-flowers-umbrella-flowers-hello-kitty-pink-sanrio.jpg"
     }
 
     //V1.0 LAYOUT
     RowLayout{
+        anchors.centerIn: parent
         anchors.fill: parent
         // take ss Button
 
         Image {
 //            Layout.margins: 32
-            Layout.alignment: Qt.AlignCenter | Qt.AlignLeft
+            Layout.alignment: Qt.AlignCenter
             Layout.margins: 16
             source: "https://i.pinimg.com/originals/7c/86/99/7c86995d3a4ad0d67cf1ae8750cc97b9.png"
             Layout.preferredWidth: 100
@@ -164,6 +165,7 @@ ApplicationWindow {
         visible: false
         ScreenShootMenu {
         }
+
         //FIXME: MFIX THIS TRASH DOES NOT WORK
 //        Component
 //        {
